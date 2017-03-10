@@ -2,7 +2,6 @@ package com.example.android.gpsdatalogger;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String mEventLog = "Event Log:\n";
 
     /**
-     * Variables for compass and location episode
+     * Variables for compass and location use
      */
     private SensorManager mSensorManager;
 
@@ -43,12 +42,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float[] gravity = new float[3];
     // magnetic data
     private float[] geomagnetic = new float[3];
-    // Rotation data
-    private float[] rotation = new float[9];
-    // orientation (azimuth, pitch, roll)
-    private float[] orientation = new float[3];
-    // smoothed values
-    private float[] smoothed = new float[3];
 
     private LocationManager mLocationManager;
 
@@ -56,18 +49,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Sensor mSensorGravity;
     private Sensor mSensorMagnetic;
-    private Location currentLocation;
-    private GeomagneticField geomagneticField;
     private double bearing = 0;
-
-    private String FILENAME = "filename";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+/**
+ * assign views to local variables
+ */
         mTextClock = (TextClock) findViewById(R.id.tc_event_time);
         mTextClock.setFormat24Hour("yyyyMMdd hh:mm:ss");
         mAzimuthTV = (TextView) findViewById(R.id.tv_azimuth);
@@ -75,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLogDisplayTV = (TextView) findViewById(R.id.tv_log_display);
         mLogButtonTV = (TextView) findViewById(R.id.tv_log_button);
 
+        /**
+         * set log button to collect the data from the displays and add them to the event log
+         */
         mLogButtonTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+        /**
+         * set the sensors and sensor manager
+         */
         mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         mSensorGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -97,6 +94,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager.registerListener(this, mSensorGravity,
                 SensorManager.SENSOR_DELAY_GAME);
 
+
+        /**
+         * check for location permission, request if not current
+         * call to run location services if it is
+         */
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -107,6 +109,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+
+    /**
+     * inflate the menu in main activity
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = new MenuInflater(this);
@@ -118,6 +126,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_share:
+
+                /**
+                 * share the text of the event log to send via another app
+                 */
                 ShareCompat.IntentBuilder.from(this)
                         .setChooserTitle("share weather")
                         .setType("text/plain")
@@ -128,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return true;
     }
 
+
+    /**
+     * request location permission if not already granted
+     */
     private void requestLocationPermission() {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
@@ -140,30 +156,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    /**
+     * on recieving location permissions, begin run location services
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case FINE_LOCATION_PERMISSION: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
                     runLocationServices();
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
 
                 }
-                return;
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
-
+    /**
+     * get data from the sensor to get compass azimuth
+     * @param event
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
         final float alpha = 0.97f;
@@ -219,6 +238,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    /**
+     * this method contains all the steps to get latt and long for location
+     */
     private void runLocationServices() {
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
