@@ -166,38 +166,49 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        boolean accelOrMagnetic = false;
+        final float alpha = 0.97f;
 
-        // get accelerometer data
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            // we need to use a low pass filter to make data smoothed
-            gravity = event.values;
-            accelOrMagnetic = true;
+        synchronized (this) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            geomagnetic = event.values;
-            accelOrMagnetic = true;
+                gravity[0] = alpha * gravity[0] + (1 - alpha)
+                        * event.values[0];
+                gravity[1] = alpha * gravity[1] + (1 - alpha)
+                        * event.values[1];
+                gravity[2] = alpha * gravity[2] + (1 - alpha)
+                        * event.values[2];
 
-        }
+                // mGravity = event.values;
 
-        // get rotation matrix to get gravity and magnetic data
-        SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
-        // get bearing to target
-        SensorManager.getOrientation(rotation, orientation);
-        // east degrees of true North
-        bearing = orientation[0];
-        // convert from radians to degrees
-        bearing = Math.toDegrees(bearing);
-        bearing = Math.round(bearing);
+                // Log.e(TAG, Float.toString(mGravity[0]));
+            }
 
-//        // fix difference between true North and magnetical North
-//        if (geomagneticField != null) {
-//            bearing += geomagneticField.getDeclination();
-//        }
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                // mGeomagnetic = event.values;
 
-        // bearing must be in 0-360
-        if (bearing < 0) {
-            bearing += 360;
+                geomagnetic[0] = alpha * geomagnetic[0] + (1 - alpha)
+                        * event.values[0];
+                geomagnetic[1] = alpha * geomagnetic[1] + (1 - alpha)
+                        * event.values[1];
+                geomagnetic[2] = alpha * geomagnetic[2] + (1 - alpha)
+                        * event.values[2];
+                // Log.e(TAG, Float.toString(event.values[0]));
+
+            }
+
+            float R[] = new float[9];
+            float I[] = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, gravity,
+                    geomagnetic);
+            if (success) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                // Log.d(TAG, "azimuth (rad): " + azimuth);
+                bearing = (float) Math.toDegrees(orientation[0]); // orientation
+                bearing = (bearing + 360) % 360;
+                bearing = Math.round(bearing);
+                // Log.d(TAG, "azimuth (deg): " + azimuth);
+            }
         }
         mAzimuthTV.setText(String.valueOf(bearing));
 
