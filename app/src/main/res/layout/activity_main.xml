@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context="com.example.android.gpsdatalogger.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/textViewStyle"
+            android:paddingRight="12dp"
+            android:text="Current time:"/>
+
+        <TextClock
+            android:id="@+id/tc_event_time"
+            style="@style/textViewStyle"
+            android:format24Hour="yyyyMMdd hh:mm:ss"
+            android:format12Hour="@null"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/textViewStyle"
+            android:paddingRight="12dp"
+            android:text="Azimuth:"/>
+
+        <TextView
+            style="@style/textViewStyle"
+            android:id="@+id/tv_azimuth"
+            android:text="Azimuth appears here"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/textViewStyle"
+            android:paddingRight="12dp"
+            android:text="Location:"/>
+
+        <TextView
+            android:id="@+id/tv_location"
+            style="@style/textViewStyle"
+            android:text="location"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="12dp">
+        <TextView
+            android:id="@+id/tv_log_display"
+            style="@style/textViewStyle"
+            android:text="Log will display here"/>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_log_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:layout_margin="6dp"
+        android:textSize="18sp"
+        android:background="@android:color/darker_gray"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:text="LOG"/>
+
+
+</LinearLayout>
