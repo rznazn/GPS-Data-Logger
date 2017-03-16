@@ -1,6 +1,7 @@
 package com.example.android.gpsdatalogger;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -46,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private LocationManager mLocationManager;
 
     private static final int FINE_LOCATION_PERMISSION = 0;
+    private static final int READ_EXT_MEM = 1;
+    private static final int WRITE_EXT_MEM = 2;
 
     private Sensor mSensorGravity;
     private Sensor mSensorMagnetic;
@@ -54,13 +65,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
 
 /**
  * assign views to local variables
  */
         mTextClock = (TextClock) findViewById(R.id.tc_event_time);
-        mTextClock.setFormat24Hour("yyyyMMdd hh:mm:ss");
         mAzimuthTV = (TextView) findViewById(R.id.tv_azimuth);
         mLocationTV = (TextView) findViewById(R.id.tv_location);
         mLogDisplayTV = (TextView) findViewById(R.id.tv_log_display);
@@ -72,12 +83,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLogButtonTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String eventTime = mTextClock.getText().toString();
-                String eventAzimuth = mAzimuthTV.getText().toString();
-                String eventLocation = mLocationTV.getText().toString();
-                mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
-                        "\n" + eventLocation + "\n\n");
-                mLogDisplayTV.setText(mEventLog);
+                try {
+                    runLoggingFunction();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -99,12 +109,55 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
          * check for location permission, request if not current
          * call to run location services if it is
          */
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission();
-        }else {
-            runLocationServices();
+
+        requestLocationPermissions();
+        requestReadExternalMemoryPermissions();
+        runLocationServices();
+
+
+    }
+
+    private void runLoggingFunction() throws IOException {
+        String eventTime = mTextClock.getText().toString();
+        String eventAzimuth = mAzimuthTV.getText().toString();
+        String eventLocation = mLocationTV.getText().toString();
+        mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
+                "\n" + eventLocation + "\n\n");
+        mLogDisplayTV.setText(mEventLog);
+
+        /**
+         * write to eternal storage
+         */
+        File fileRoot = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File fileDirectory = new File(fileRoot.getAbsolutePath() + "/eventLog");
+        boolean newFileMade = fileDirectory.createNewFile();
+        File file = new File(fileDirectory, "eventLog.txt");
+        boolean newDocMade = file.createNewFile();
+        if (newDocMade) {
+            Toast.makeText(this, "error making file", Toast.LENGTH_LONG).show();
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            PrintWriter pw = new PrintWriter(fos);
+            pw.print(mEventLog);
+            pw.flush();
+            pw.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /**
+         * read from storage
+         */
+        FileInputStream fis = openFileInput("eventLog.txt");
+        StringBuffer fileContent = new StringBuffer("");
+        byte[] buffer = new byte[1024];
+
+        int n;
+        while ((n = fis.read(buffer)) != -1) {
+            fileContent.append(new String(buffer, 0, n));
         }
 
     }
@@ -112,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     /**
      * inflate the menu in main activity
+     *
      * @param menu
      * @return
      */
@@ -124,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_share:
 
                 /**
@@ -144,20 +198,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     /**
      * request location permission if not already granted
      */
-    private void requestLocationPermission() {
-        // Here, thisActivity is the current activity
+    private void requestLocationPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     FINE_LOCATION_PERMISSION);
+        }
+    }
+
+    private void requestReadExternalMemoryPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_EXT_MEM);
         }
     }
 
     /**
      * on recieving location permissions, begin run location services
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -181,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     /**
      * get data from the sensor to get compass azimuth
+     *
      * @param event
      */
     @Override
@@ -252,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 double longDouble = location.getLongitude();
                 String longString = String.valueOf(longDouble);
                 String locationString = "latt: " + lattString +
-                        "  long: " + longString;
+                        "\nlong: " + longString;
                 mLocationTV.setText(locationString);
             }
 
