@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView mLocationTV;
     private TextView mLogDisplayTV;
     private TextView mLogButtonTV;
+    private ScrollView mDisplaySV;
+    /**
+     * Strings for handling file name
+     * TODO add extra activity to create multiple files 
+     */
     private String GPSLog = "/" + "GPSLog";
 
     /**
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLocationTV = (TextView) findViewById(R.id.tv_location);
         mLogDisplayTV = (TextView) findViewById(R.id.tv_log_display);
         mLogButtonTV = (TextView) findViewById(R.id.tv_log_button);
+        mDisplaySV = (ScrollView) findViewById(R.id.sv_display);
 
 
         /**
@@ -87,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 writeToExternalStorage();
                 readFromExternalStorage();
+                mDisplaySV.fullScroll(View.FOCUS_DOWN);
 
             }
         });
