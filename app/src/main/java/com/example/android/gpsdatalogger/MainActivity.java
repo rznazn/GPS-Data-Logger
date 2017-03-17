@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView mLocationTV;
     private TextView mLogDisplayTV;
     private TextView mLogButtonTV;
-    private String mEventLog = "Event Log:\n";
     private String GPSLog = "/" + "GPSLog";
 
     /**
@@ -52,14 +52,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private LocationListener mLocationListener;
     private float[] gravity = new float[3];
-    // magnetic data
     private float[] geomagnetic = new float[3];
 
     private LocationManager mLocationManager;
 
     private static final int FINE_LOCATION_PERMISSION = 0;
-    private static final int READ_EXT_MEM = 1;
-    private static final int WRITE_EXT_MEM = 2;
 
     private Sensor mSensorGravity;
     private Sensor mSensorMagnetic;
@@ -80,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLogDisplayTV = (TextView) findViewById(R.id.tv_log_display);
         mLogButtonTV = (TextView) findViewById(R.id.tv_log_button);
 
+
         /**
          * set log button to collect the data from the displays and add them to the event log
          */
@@ -87,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
 
-                    runLoggingFunction();
-
+                writeToExternalStorage();
+                readFromExternalStorage();
 
             }
         });
@@ -105,32 +103,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager.registerListener(this, mSensorGravity,
                 SensorManager.SENSOR_DELAY_GAME);
 
-
         /**
          * check for location permission, request if not current
          * call to run location services if it is
          */
-
-        requestLocationPermissions();
-        requestReadExternalMemoryPermissions();
+        requestPermissions();
         runLocationServices();
 
-
-    }
-
-    private void runLoggingFunction(){
-
-        writeToExternalStorage();
+        /**
+         * load data to display if a log already exists
+         */
         readFromExternalStorage();
-//        String eventTime = mTextClock.getText().toString();
-//        String eventAzimuth = mAzimuthTV.getText().toString();
-//        String eventLocation = mLocationTV.getText().toString();
-//        mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
-//                "\n" + eventLocation + "\n\n");
-//        mLogDisplayTV.setText(mEventLog);
 
     }
-
 
     /**
      * inflate the menu in main activity
@@ -145,6 +130,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return true;
     }
 
+    /**
+     * Pull log from the display and share to other app for sharing
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -156,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 ShareCompat.IntentBuilder.from(this)
                         .setChooserTitle("share weather")
                         .setType("text/plain")
-                        .setText(mEventLog)
+                        .setText(mLogDisplayTV.getText())
                         .startChooser();
                 break;
         }
@@ -165,35 +155,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     /**
-     * request location permission if not already granted
+     * request permission if not already granted
      */
-    private void requestLocationPermissions() {
+    private void requestPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this,
                     new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     FINE_LOCATION_PERMISSION);
         }
     }
 
-    private void requestReadExternalMemoryPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    READ_EXT_MEM);
-        }
-    }
-
     /**
-     * on recieving location permissions, begin run location services
+     * on receiving location permissions, begin run location services
      *
      * @param requestCode
      * @param permissions
@@ -235,9 +216,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 gravity[2] = alpha * gravity[2] + (1 - alpha)
                         * event.values[2];
 
-                // mGravity = event.values;
-
-                // Log.e(TAG, Float.toString(mGravity[0]));
             }
 
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -249,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         * event.values[1];
                 geomagnetic[2] = alpha * geomagnetic[2] + (1 - alpha)
                         * event.values[2];
-                // Log.e(TAG, Float.toString(event.values[0]));
 
             }
 
@@ -260,11 +237,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                // Log.d(TAG, "azimuth (rad): " + azimuth);
-                bearing = (float) Math.toDegrees(orientation[0]); // orientation
+                bearing = (float) Math.toDegrees(orientation[0]);
                 bearing = (bearing + 360) % 360;
                 bearing = Math.round(bearing);
-                // Log.d(TAG, "azimuth (deg): " + azimuth);
             }
         }
         mAzimuthTV.setText(String.valueOf(bearing));
@@ -321,6 +296,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 1, mLocationListener);
     }
 
+    /**
+     * write current readings to file
+     */
     public void writeToExternalStorage(){
         String storageState = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(storageState)){
@@ -334,11 +312,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             String eventTime = mTextClock.getText().toString();
             String eventAzimuth = mAzimuthTV.getText().toString();
             String eventLocation = mLocationTV.getText().toString();
-            mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
+            String eventToLog = "";
+            eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
                     "\n" + eventLocation + "\n\n");
             try {
-                FileOutputStream fos = new FileOutputStream(log);
-                fos.write(mEventLog.getBytes());
+                FileOutputStream fos = new FileOutputStream(log, true);
+                PrintWriter pw = new PrintWriter(fos);
+                pw.write(eventToLog);
+                pw.flush();
+                pw.close();
                 fos.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -352,6 +334,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    /**
+     * read data file from file and show in display
+     */
     public void readFromExternalStorage(){
         mLogDisplayTV.setText("");
         File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
