@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView mLogDisplayTV;
     private TextView mLogButtonTV;
     private String mEventLog = "Event Log:\n";
-    private String GPSLog = "GPSLog";
+    private String GPSLog = "/" + "GPSLog";
 
     /**
      * Variables for compass and location use
@@ -324,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void writeToExternalStorage(){
         String storageState = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(storageState)){
-            Toast.makeText(this, "media is mounted", Toast.LENGTH_LONG).show();
             File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
             File dir = new File(root.getAbsolutePath() + GPSLog);
             if (!dir.exists()){
@@ -335,15 +334,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             String eventTime = mTextClock.getText().toString();
             String eventAzimuth = mAzimuthTV.getText().toString();
             String eventLocation = mLocationTV.getText().toString();
-            String eventToLog = "";
-            eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
+            mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
                     "\n" + eventLocation + "\n\n");
             try {
                 FileOutputStream fos = new FileOutputStream(log);
-                fos.write(eventToLog.getBytes());
+                fos.write(mEventLog.getBytes());
                 fos.close();
-                eventToLog.equals("");
-                Toast.makeText(this, "Event logged to " + log, Toast.LENGTH_LONG).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
