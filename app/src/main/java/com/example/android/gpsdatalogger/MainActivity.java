@@ -24,11 +24,13 @@ import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView mLogDisplayTV;
     private TextView mLogButtonTV;
     private String mEventLog = "Event Log:\n";
+    private String GPSLog = "GPSLog";
 
     /**
      * Variables for compass and location use
@@ -83,11 +86,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLogButtonTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
+
                     runLoggingFunction();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
 
             }
         });
@@ -117,48 +118,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    private void runLoggingFunction() throws IOException {
-        String eventTime = mTextClock.getText().toString();
-        String eventAzimuth = mAzimuthTV.getText().toString();
-        String eventLocation = mLocationTV.getText().toString();
-        mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
-                "\n" + eventLocation + "\n\n");
-        mLogDisplayTV.setText(mEventLog);
+    private void runLoggingFunction(){
 
-        /**
-         * write to eternal storage
-         */
-        File fileRoot = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File fileDirectory = new File(fileRoot.getAbsolutePath() + "/eventLog");
-        boolean newFileMade = fileDirectory.createNewFile();
-        File file = new File(fileDirectory, "eventLog.txt");
-        boolean newDocMade = file.createNewFile();
-        if (newDocMade) {
-            Toast.makeText(this, "error making file", Toast.LENGTH_LONG).show();
-        }
-
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            PrintWriter pw = new PrintWriter(fos);
-            pw.print(mEventLog);
-            pw.flush();
-            pw.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        /**
-         * read from storage
-         */
-        FileInputStream fis = openFileInput("eventLog.txt");
-        StringBuffer fileContent = new StringBuffer("");
-        byte[] buffer = new byte[1024];
-
-        int n;
-        while ((n = fis.read(buffer)) != -1) {
-            fileContent.append(new String(buffer, 0, n));
-        }
+        writeToExternalStorage();
+        readFromExternalStorage();
+//        String eventTime = mTextClock.getText().toString();
+//        String eventAzimuth = mAzimuthTV.getText().toString();
+//        String eventLocation = mLocationTV.getText().toString();
+//        mEventLog = mEventLog.concat(eventTime + "\n" + eventAzimuth +
+//                "\n" + eventLocation + "\n\n");
+//        mLogDisplayTV.setText(mEventLog);
 
     }
 
@@ -350,5 +319,65 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
                 1, mLocationListener);
+    }
+
+    public void writeToExternalStorage(){
+        String storageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(storageState)){
+            Toast.makeText(this, "media is mounted", Toast.LENGTH_LONG).show();
+            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File dir = new File(root.getAbsolutePath() + GPSLog);
+            if (!dir.exists()){
+                dir.mkdirs();
+            }
+            File log = new File(dir, GPSLog + ".txt");
+
+            String eventTime = mTextClock.getText().toString();
+            String eventAzimuth = mAzimuthTV.getText().toString();
+            String eventLocation = mLocationTV.getText().toString();
+            String eventToLog = "";
+            eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
+                    "\n" + eventLocation + "\n\n");
+            try {
+                FileOutputStream fos = new FileOutputStream(log);
+                fos.write(eventToLog.getBytes());
+                fos.close();
+                eventToLog.equals("");
+                Toast.makeText(this, "Event logged to " + log, Toast.LENGTH_LONG).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            Toast.makeText(this, "External Storage no available", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void readFromExternalStorage(){
+        mLogDisplayTV.setText("");
+        File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File dir = new File(root.getAbsolutePath() + GPSLog);
+        File log = new File(dir, GPSLog + ".txt");
+
+        try {
+            FileInputStream fis = new FileInputStream(log);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String  logForDisplay;
+            StringBuffer sb = new StringBuffer();
+
+            while ((logForDisplay = br.readLine()) != null){
+                sb.append(logForDisplay + "\n" );
+            }
+
+            mLogDisplayTV.setText(sb.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
