@@ -7,6 +7,10 @@
     android:background="@android:color/black"
     tools:context="com.example.android.gpsdatalogger.FileManagerActivity">
 
+    <TextView
+        style="@style/textViewStyle"
+        android:text="@string/filesSavedTo"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_file_directory"
         android:layout_width="match_parent"

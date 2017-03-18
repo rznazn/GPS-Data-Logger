@@ -12,4 +12,5 @@
         4. Hold steady for 10-20 secs, and allow azimuth to settle before logging. </string>
     <string name="fileexists">File already exists</string>
     <string name="extStorageUnavailable">External storage is not available</string>
+    <string name="filesSavedTo">Files saved to /Documents</string>
 </resources>
