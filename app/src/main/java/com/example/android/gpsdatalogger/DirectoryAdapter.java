@@ -14,11 +14,14 @@ import java.io.File;
  */
 
 public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.directoryAdapterViewHolder>{
-
+    /**
+     * global class variables
+     */
+    private final directoryAdapterOnClickHandler mClickHandler;
     private File[] mFiles;
 
     /**
-     * Creates a ForecastAdapter.
+     * Creates a DirectoryAdapter.
      *
      * @param clickHandler The on-click handler for this adapter. This single handler is called
      *                     when an item is clicked.
@@ -27,6 +30,12 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
         mClickHandler = clickHandler;
     }
 
+    /**
+     * create view holder object to be filled with assigned values
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public directoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -39,6 +48,11 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
 
     }
 
+    /**
+     * assign data set to appropriate view
+     * @param holder the holder object that will display the desired data
+     * @param position in the array of data being displayed
+     */
     @Override
     public void onBindViewHolder(directoryAdapterViewHolder holder, int position) {
         String filenameAtPosition = mFiles[position].getName();
@@ -46,6 +60,10 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
 
     }
 
+    /**
+     *
+     * @return the number of items to be dispalyed in the recyclerview
+     */
     @Override
     public int getItemCount() {
         if (mFiles != null) {
@@ -55,6 +73,9 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
         }
     }
 
+    /**
+     * viewHolder object class. the actual view object that gets displayed in the recyclerview
+     */
     public class directoryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mDirectoryListItemTV;
 
@@ -64,6 +85,10 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * get the information needed from the clicked view to pass into the clickhandler
+         * @param v
+         */
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
@@ -73,14 +98,19 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
         }
     }
 
+    /**
+     * public method to send new data for the recycler view
+     * @param files
+     */
     public void setmFiles(File[] files){
         mFiles = files;
         notifyDataSetChanged();
     }
-    private final directoryAdapterOnClickHandler mClickHandler;
+
 
     /**
      * The interface that receives onClick messages.
+     * onClick argument passes objects to the activity where this method is overridden
      */
     public interface directoryAdapterOnClickHandler {
         void onClick(String file);

@@ -27,7 +27,7 @@ public class StorageManager {
      * create a document for future use
      */
 
-    public static void createFileInexternalStorage (Context context, String directoryname, String filename) {
+    public static void createFileInExternalStorage(Context context, String directoryname, String filename) {
         String storageState = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(storageState)) {
             File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);

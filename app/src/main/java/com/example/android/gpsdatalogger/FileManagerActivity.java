@@ -113,7 +113,7 @@ public class FileManagerActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         EditText fileNameET = (EditText) inputView.findViewById(R.id.et_new_file);
                         String fileNameString = fileNameET.getText().toString() + ".txt";
-                        StorageManager.createFileInexternalStorage(FileManagerActivity.this, directoryName, fileNameString);
+                        StorageManager.createFileInExternalStorage(FileManagerActivity.this, directoryName, fileNameString);
                         updateRecyclerView();
                     }
                 });
@@ -132,6 +132,10 @@ public class FileManagerActivity extends AppCompatActivity
 
     }
 
+    /**
+     * interface with the on click method in the recycler view adapter
+     * @param file is passed from the viewholder in the adapter
+     */
     @Override
     public void onClick(String file) {
 
