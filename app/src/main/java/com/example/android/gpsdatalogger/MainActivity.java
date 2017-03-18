@@ -11,7 +11,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,16 +21,8 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import static com.example.android.gpsdatalogger.StorageManager.readFromExternalStorage;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -48,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      * Strings for handling file name
      * TODO add extra activity to create multiple files 
      */
+    private String directoryName = "/GPSLog";
+    private String fileName = "GPSLog";
     private String GPSLog = "/" + "GPSLog";
 
     /**
@@ -90,8 +83,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
 
-                writeToExternalStorage();
-                readFromExternalStorage();
+                String eventTime = mTextClock.getText().toString();
+            String eventAzimuth = mAzimuthTV.getText().toString();
+            String eventLocation = mLocationTV.getText().toString();
+            String eventToLog = "";
+            eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
+                    "\n" + eventLocation + "\n\n");
+                StorageManager.writeToExternalStorage(MainActivity.this, directoryName, fileName, eventToLog, true);
+                String currentLog = StorageManager.readFromExternalStorage(MainActivity.this, directoryName, fileName);
+                mLogDisplayTV.setText(currentLog);
                 mDisplaySV.fullScroll(View.FOCUS_DOWN);
 
             }
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         /**
          * load data to display if a log already exists
          */
-        readFromExternalStorage();
+        readFromExternalStorage(MainActivity.this, directoryName, fileName);
 
     }
 
@@ -257,70 +257,5 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
                 1, mLocationListener);
     }
-
-    /**
-     * write current readings to file
-     */
-    public void writeToExternalStorage(){
-        String storageState = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(storageState)){
-            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-            File dir = new File(root.getAbsolutePath() + GPSLog);
-            if (!dir.exists()){
-                dir.mkdirs();
-            }
-            File log = new File(dir, GPSLog + ".txt");
-
-            String eventTime = mTextClock.getText().toString();
-            String eventAzimuth = mAzimuthTV.getText().toString();
-            String eventLocation = mLocationTV.getText().toString();
-            String eventToLog = "";
-            eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
-                    "\n" + eventLocation + "\n\n");
-            try {
-                FileOutputStream fos = new FileOutputStream(log, true);
-                PrintWriter pw = new PrintWriter(fos);
-                pw.write(eventToLog);
-                pw.flush();
-                pw.close();
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }else {
-            Toast.makeText(this, "External Storage no available", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    /**
-     * read data file from file and show in display
-     */
-    public void readFromExternalStorage(){
-        mLogDisplayTV.setText("");
-        File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File dir = new File(root.getAbsolutePath() + GPSLog);
-        File log = new File(dir, GPSLog + ".txt");
-
-        try {
-            FileInputStream fis = new FileInputStream(log);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String  logForDisplay;
-            StringBuffer sb = new StringBuffer();
-
-            while ((logForDisplay = br.readLine()) != null){
-                sb.append(logForDisplay + "\n" );
-            }
-
-            mLogDisplayTV.setText(sb.toString());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//
 }
