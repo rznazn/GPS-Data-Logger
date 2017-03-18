@@ -167,7 +167,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .setText(mLogDisplayTV.getText())
                         .startChooser();
                 break;
-            case R.id.home:
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
