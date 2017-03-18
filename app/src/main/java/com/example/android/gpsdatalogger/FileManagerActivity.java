@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.File;
+
 /**
  * Created by sport on 3/17/2017.
  */
@@ -30,8 +32,10 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
      */
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
+    private DirectoryAdapter mAdapter;
     private static final int FINE_LOCATION_PERMISSION = 0;
     private String directoryName = "/GPSLog";
+    private File[] mFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +44,23 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
         setContentView(R.layout.activity_file_manager);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_file_directory);
+
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        mAdapter = new DirectoryAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+
 
         /**
          * check for location permission, request if not current
          * call to run location services if it is
          */
         requestPermissions();
+
+        mFiles = StorageManager.getFilesInDirectory(this, directoryName);
+        mAdapter.setmFiles(mFiles);
     }
 
     /**

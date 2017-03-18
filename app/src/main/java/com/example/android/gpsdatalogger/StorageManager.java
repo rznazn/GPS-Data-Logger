@@ -49,6 +49,16 @@ public class StorageManager {
         }
     }
 
+    /**
+     * get directory list
+     */
+    public static File[] getFilesInDirectory(Context context, String directoryname) {
+            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File dir = new File(root.getAbsolutePath() + directoryname);
+            File[] files = dir.listFiles();
+        return files;
+    }
+
 
     /**
      * write current readings to file
