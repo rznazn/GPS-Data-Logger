@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -63,7 +64,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_logging);
         /**
          * set filename to equal that from the view clicked to open this activity
          */
@@ -96,8 +97,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                     "\n" + eventLocation + "\n\n");
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
                 String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
-                mLogDisplayTV.setText(currentLog);
-                mDisplaySV.fullScroll(View.FOCUS_DOWN);
+                updateDisplayLog(currentLog);
 
             }
         });
@@ -122,7 +122,8 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         /**
          * load data to display if a log already exists
          */
-        readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
+        String currentLog = readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
+        updateDisplayLog(currentLog);
 
     }
 
@@ -158,6 +159,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .setText(mLogDisplayTV.getText())
                         .startChooser();
                 break;
+            case R.id.home:
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+
         }
         return true;
     }
@@ -262,4 +268,12 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
                 1, mLocationListener);
     }
+    /**
+     * method to update the log display
+     */
+    private void updateDisplayLog(String currentLog){
+        mLogDisplayTV.setText(currentLog);
+        mDisplaySV.fullScroll(View.FOCUS_DOWN);
+    }
+
 }
