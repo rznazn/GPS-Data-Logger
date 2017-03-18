@@ -112,7 +112,7 @@ public class FileManagerActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText fileNameET = (EditText) inputView.findViewById(R.id.et_new_file);
-                        String fileNameString = fileNameET.getText().toString();
+                        String fileNameString = fileNameET.getText().toString() + ".txt";
                         StorageManager.createFileInexternalStorage(FileManagerActivity.this, directoryName, fileNameString);
                         updateRecyclerView();
                     }
