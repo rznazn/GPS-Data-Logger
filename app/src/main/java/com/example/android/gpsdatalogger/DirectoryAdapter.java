@@ -13,9 +13,19 @@ import java.io.File;
  * Created by sport on 3/17/2017.
  */
 
-public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.directoryAdapterViewHolder> {
+public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.directoryAdapterViewHolder>{
 
     private File[] mFiles;
+
+    /**
+     * Creates a ForecastAdapter.
+     *
+     * @param clickHandler The on-click handler for this adapter. This single handler is called
+     *                     when an item is clicked.
+     */
+    public DirectoryAdapter(directoryAdapterOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
+    }
 
     @Override
     public directoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -56,7 +66,9 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
 
         @Override
         public void onClick(View v) {
-
+            int adapterPosition = getAdapterPosition();
+            String file = mFiles[adapterPosition].getName();
+            mClickHandler.onClick(file);
 
         }
     }
@@ -65,4 +77,13 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
         mFiles = files;
         notifyDataSetChanged();
     }
+    private final directoryAdapterOnClickHandler mClickHandler;
+
+    /**
+     * The interface that receives onClick messages.
+     */
+    public interface directoryAdapterOnClickHandler {
+        void onClick(String file);
+    }
+
 }

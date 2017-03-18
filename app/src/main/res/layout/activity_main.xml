@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:padding="8dp"
-    tools:context="com.example.android.gpsdatalogger.MainActivity">
+    tools:context="com.example.android.gpsdatalogger.LoggingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -2,6 +2,7 @@ package com.example.android.gpsdatalogger;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,7 +25,9 @@ import java.io.File;
  * Created by sport on 3/17/2017.
  */
 
-public class FileManagerActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
+public class FileManagerActivity extends AppCompatActivity
+        implements ActivityCompat.OnRequestPermissionsResultCallback,
+            DirectoryAdapter.directoryAdapterOnClickHandler{
 
     /**
      * create global variables for views
@@ -48,7 +51,7 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new DirectoryAdapter();
+        mAdapter = new DirectoryAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -129,28 +132,34 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
 
     }
 
-    //    /**
-//     * on receiving location permissions, begin run location services
-//     *
-//     * @param requestCode
-//     * @param permissions
-//     * @param grantResults
-//     */
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case FINE_LOCATION_PERMISSION: {
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-//
-//                    runLocationServices();
-//
-//                }
-//            }
-//
-//        }
-//    }
+    @Override
+    public void onClick(String file) {
+
+        Intent intentToStartMainActivity = new Intent(this, LoggingActivity.class);
+        intentToStartMainActivity.putExtra(Intent.EXTRA_TEXT, file);
+        startActivity(intentToStartMainActivity);
+    }
+
+        /**
+     * on receiving location permissions, begin run location services
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case FINE_LOCATION_PERMISSION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                   updateRecyclerView();
+
+                }
+            }
+
+        }
+    }
 
 }

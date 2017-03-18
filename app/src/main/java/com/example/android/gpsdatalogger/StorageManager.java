@@ -35,7 +35,7 @@ public class StorageManager {
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            File log = new File(dir, filename + ".txt");
+            File log = new File(dir, filename);
             Log.v("Storage Manager", log.toString());
             try {
                 FileOutputStream fos = new FileOutputStream(log, true);
@@ -73,7 +73,7 @@ public class StorageManager {
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                File log = new File(dir, filename + ".txt");
+                File log = new File(dir, filename);
 
                 try {
                     FileOutputStream fos = new FileOutputStream(log, true);
@@ -100,7 +100,7 @@ public class StorageManager {
     public static String readFromExternalStorage(Context context, String directoryname, String filename) {
         File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
         File dir = new File(root.getAbsolutePath() + directoryname);
-        File log = new File(dir, filename + ".txt");
+        File log = new File(dir, filename);
 
         StringBuffer sb = new StringBuffer();
 

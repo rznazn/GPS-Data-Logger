@@ -1,6 +1,7 @@
 package com.example.android.gpsdatalogger;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -24,7 +25,7 @@ import android.widget.TextView;
 
 import static com.example.android.gpsdatalogger.StorageManager.readFromExternalStorage;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener{
+public class LoggingActivity extends AppCompatActivity implements SensorEventListener{
 
     /**
      * View and string variable for basic UI function
@@ -40,8 +41,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      * TODO add extra activity to create multiple files 
      */
     private String directoryName = "/GPSLog";
-    private String fileName = "GPSLog";
-    private String GPSLog = "/" + "GPSLog";
+    private String fileName = "";
 
     /**
      * Variables for compass and location use
@@ -64,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+        /**
+         * set filename to equal that from the view clicked to open this activity
+         */
+        Intent intent = getIntent();
+        fileName = intent.getStringExtra(Intent.EXTRA_TEXT);
 
 /**
  * assign views to local variables
@@ -89,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             String eventToLog = "";
             eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
                     "\n" + eventLocation + "\n\n");
-                StorageManager.writeToExternalStorage(MainActivity.this, directoryName, fileName, eventToLog, true);
-                String currentLog = StorageManager.readFromExternalStorage(MainActivity.this, directoryName, fileName);
+                StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
+                String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
                 mLogDisplayTV.setText(currentLog);
                 mDisplaySV.fullScroll(View.FOCUS_DOWN);
 
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         /**
          * load data to display if a log already exists
          */
-        readFromExternalStorage(MainActivity.this, directoryName, fileName);
+        readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
 
     }
 
