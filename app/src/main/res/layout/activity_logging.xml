@@ -55,7 +55,10 @@
             style="@style/textViewStyle"
             android:text="location"/>
     </LinearLayout>
-
+<View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@android:color/holo_green_light"/>
     <ScrollView
         android:id="@+id/sv_display"
         android:layout_width="match_parent"

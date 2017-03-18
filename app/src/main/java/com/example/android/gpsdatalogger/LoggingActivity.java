@@ -17,7 +17,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -71,9 +70,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          * AlertDialog to give use guidance with compass
          */
         AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
-        LayoutInflater layoutInflater = getLayoutInflater();
-//        final View inputView = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
-//        builder.setView(inputView);
         builder.setMessage("For best results with the compass: \n" +
                 "1. Use parallel to the ground. \n" +
                 "2. Use outside and away from metal objects. \n" +

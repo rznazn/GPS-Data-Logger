@@ -2,7 +2,6 @@ package com.example.android.gpsdatalogger;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -34,16 +33,17 @@ public class StorageManager {
             File dir = new File(root.getAbsolutePath() + directoryname);
             if (!dir.exists()) {
                 dir.mkdirs();
-            }
-            File log = new File(dir, filename);
-            Log.v("Storage Manager", log.toString());
-            try {
-                FileOutputStream fos = new FileOutputStream(log, true);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                File log = new File(dir, filename);
+                try {
+                    FileOutputStream fos = new FileOutputStream(log, true);
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (dir.exists()){
+                Toast.makeText(context, "file already exists", Toast.LENGTH_LONG).show();
             }
 
         }
