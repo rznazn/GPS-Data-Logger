@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
     /**
      * View and string variable for basic UI function
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private LocationManager mLocationManager;
 
-    private static final int FINE_LOCATION_PERMISSION = 0;
 
     private Sensor mSensorGravity;
     private Sensor mSensorMagnetic;
@@ -112,10 +110,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 SensorManager.SENSOR_DELAY_GAME);
 
         /**
-         * check for location permission, request if not current
          * call to run location services if it is
          */
-        requestPermissions();
         runLocationServices();
 
         /**
@@ -162,48 +158,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-    /**
-     * request permission if not already granted
-     */
-    private void requestPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    FINE_LOCATION_PERMISSION);
-        }
-    }
-
-    /**
-     * on receiving location permissions, begin run location services
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case FINE_LOCATION_PERMISSION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-
-                    runLocationServices();
-
-                }
-            }
-
-        }
-    }
 
     /**
      * get data from the sensor to get compass azimuth
