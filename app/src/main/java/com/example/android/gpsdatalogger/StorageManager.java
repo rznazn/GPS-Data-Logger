@@ -33,7 +33,9 @@ public class StorageManager {
             File dir = new File(root.getAbsolutePath() + directoryname);
             if (!dir.exists()) {
                 dir.mkdirs();
-                File log = new File(dir, filename);
+            }
+            File log = new File(dir, filename);
+            if (!log.exists()) {
                 try {
                     FileOutputStream fos = new FileOutputStream(log, true);
                     fos.close();
@@ -42,8 +44,8 @@ public class StorageManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (dir.exists()){
-                Toast.makeText(context, "file already exists", Toast.LENGTH_LONG).show();
+            } else if (log.exists()){
+                Toast.makeText(context, "File already exists", Toast.LENGTH_LONG ).show();
             }
 
         }
