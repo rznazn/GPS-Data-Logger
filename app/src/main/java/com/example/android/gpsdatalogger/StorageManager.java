@@ -2,6 +2,7 @@ package com.example.android.gpsdatalogger;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -15,9 +16,38 @@ import java.io.PrintWriter;
 
 /**
  * Created by sport on 3/17/2017.
+ * this class is to facilitate reading and writing to external storage
  */
 
 public class StorageManager {
+
+    private StorageManager(){}
+
+    /**
+     * create a document for future use
+     */
+
+    public static void createFileInexternalStorage (Context context, String directoryname, String filename) {
+        String storageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(storageState)) {
+            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File dir = new File(root.getAbsolutePath() + directoryname);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File log = new File(dir, filename + ".txt");
+            Log.v("Storage Manager", log.toString());
+            try {
+                FileOutputStream fos = new FileOutputStream(log, true);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
 
     /**

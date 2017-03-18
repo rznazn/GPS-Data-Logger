@@ -257,5 +257,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
                 1, mLocationListener);
     }
-//
 }

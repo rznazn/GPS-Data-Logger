@@ -1,14 +1,23 @@
 package com.example.android.gpsdatalogger;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by sport on 3/17/2017.
@@ -22,6 +31,7 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private static final int FINE_LOCATION_PERMISSION = 0;
+    private String directoryName = "/GPSLog";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +68,47 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
         }
     }
 
-//    /**
+    /**
+     * Inflate option menu for creating new file
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+       MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.directory_menu, menu);
+        return true;
+
+    }
+
+    /**
+     * create new file in directory
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_create_file:
+                AlertDialog.Builder builder = new AlertDialog.Builder(FileManagerActivity.this);
+                LayoutInflater layoutInflater = getLayoutInflater();
+                final View inputView = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
+                builder.setView(inputView);
+                builder.setMessage("enter new file name");
+                builder.setPositiveButton("create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText fileNameET = (EditText) inputView.findViewById(R.id.et_new_file);
+                        String fileNameString = fileNameET.getText().toString();
+                        StorageManager.createFileInexternalStorage(FileManagerActivity.this, directoryName, fileNameString);
+                        Toast.makeText(FileManagerActivity.this, fileNameString, Toast.LENGTH_LONG).show();
+                    }
+                });
+                AlertDialog ad = builder.create();
+                ad.show();
+        }
+        return true;
+    }
+
+    //    /**
 //     * on receiving location permissions, begin run location services
 //     *
 //     * @param requestCode
