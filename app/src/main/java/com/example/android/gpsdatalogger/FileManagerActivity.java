@@ -107,8 +107,8 @@ public class FileManagerActivity extends AppCompatActivity
                 LayoutInflater layoutInflater = getLayoutInflater();
                 final View inputView = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
                 builder.setView(inputView);
-                builder.setMessage("enter new file name");
-                builder.setPositiveButton("create", new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.newFileAlertDialogMessage);
+                builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText fileNameET = (EditText) inputView.findViewById(R.id.et_new_file);

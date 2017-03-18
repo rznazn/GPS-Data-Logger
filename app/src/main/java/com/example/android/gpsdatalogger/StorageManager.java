@@ -45,7 +45,7 @@ public class StorageManager {
                     e.printStackTrace();
                 }
             } else if (log.exists()){
-                Toast.makeText(context, "File already exists", Toast.LENGTH_LONG ).show();
+                Toast.makeText(context, R.string.fileexists, Toast.LENGTH_LONG ).show();
             }
 
         }
@@ -67,8 +67,10 @@ public class StorageManager {
      */
     public static void writeToExternalStorage(Context context, String directoryname, String filename,
                                        String content, boolean appendContent) {
-        if (appendContent) {
-            String storageState = Environment.getExternalStorageState();
+
+        FileOutputStream fos;
+
+        String storageState = Environment.getExternalStorageState();
             if (Environment.MEDIA_MOUNTED.equals(storageState)) {
                 File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
                 File dir = new File(root.getAbsolutePath() + directoryname);
@@ -78,7 +80,11 @@ public class StorageManager {
                 File log = new File(dir, filename);
 
                 try {
-                    FileOutputStream fos = new FileOutputStream(log, true);
+                    if (appendContent) {
+                        fos = new FileOutputStream(log, true);
+                    } else {
+                        fos = new FileOutputStream(log);
+                    }
                     PrintWriter pw = new PrintWriter(fos);
                     pw.write(content);
                     pw.flush();
@@ -91,9 +97,8 @@ public class StorageManager {
                 }
 
             } else {
-                Toast.makeText(context, "External Storage no available", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.extStorageUnavailable, Toast.LENGTH_LONG).show();
             }
-        }
     }
 
     /**

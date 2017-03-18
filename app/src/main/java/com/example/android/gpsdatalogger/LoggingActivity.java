@@ -70,12 +70,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          * AlertDialog to give use guidance with compass
          */
         AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
-        builder.setMessage("For best results with the compass: \n" +
-                "1. Use parallel to the ground. \n" +
-                "2. Use outside and away from metal objects. \n" +
-                "3. Move horizontally in a figure 8 pattern to calibrate. \n" +
-                "4. Hold steady for 10-20 secs, and allow azimuth to settle before logging. ");
-
+        builder.setMessage(R.string.compassUseGuide);
         AlertDialog ad = builder.create();
         ad.show();
         /**
@@ -167,7 +162,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                  * share the text of the event log to send via another app
                  */
                 ShareCompat.IntentBuilder.from(this)
-                        .setChooserTitle("share weather")
+                        .setChooserTitle("share log")
                         .setType("text/plain")
                         .setText(mLogDisplayTV.getText())
                         .startChooser();

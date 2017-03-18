@@ -16,7 +16,7 @@
         <TextView
             style="@style/textViewStyle"
             android:paddingRight="12dp"
-            android:text="Current time:"/>
+            android:text="@string/dateTime"/>
 
         <TextClock
             android:id="@+id/tc_event_time"
@@ -33,12 +33,11 @@
         <TextView
             style="@style/textViewStyle"
             android:paddingRight="12dp"
-            android:text="Azimuth:"/>
+            android:text="@string/azimuth"/>
 
         <TextView
             style="@style/textViewStyle"
-            android:id="@+id/tv_azimuth"
-            android:text="Azimuth appears here"/>
+            android:id="@+id/tv_azimuth"/>
     </LinearLayout>
 
     <LinearLayout
@@ -48,12 +47,11 @@
         <TextView
             style="@style/textViewStyle"
             android:paddingRight="12dp"
-            android:text="Location:"/>
+            android:text="@string/location"/>
 
         <TextView
             android:id="@+id/tv_location"
-            style="@style/textViewStyle"
-            android:text="location"/>
+            style="@style/textViewStyle"/>
     </LinearLayout>
 <View
     android:layout_width="match_parent"
@@ -68,8 +66,7 @@
         android:paddingTop="12dp">
         <TextView
             android:id="@+id/tv_log_display"
-            style="@style/textViewStyle"
-            android:text="Log will display here"/>
+            style="@style/textViewStyle"/>
     </ScrollView>
 
     <TextView
