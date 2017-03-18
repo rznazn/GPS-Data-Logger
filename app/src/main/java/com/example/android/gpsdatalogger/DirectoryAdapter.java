@@ -31,7 +31,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.dire
 
     @Override
     public void onBindViewHolder(directoryAdapterViewHolder holder, int position) {
-        String filenameAtPosition = mFiles[position].toString();
+        String filenameAtPosition = mFiles[position].getName();
         holder.mDirectoryListItemTV.setText(filenameAtPosition);
 
     }

@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -34,7 +33,7 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
     private RecyclerView mRecyclerView;
     private DirectoryAdapter mAdapter;
     private static final int FINE_LOCATION_PERMISSION = 0;
-    private String directoryName = "/GPSLog";
+    public static final String directoryName = "/GPSLog";
     private File[] mFiles;
 
     @Override
@@ -59,8 +58,7 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
          */
         requestPermissions();
 
-        mFiles = StorageManager.getFilesInDirectory(this, directoryName);
-        mAdapter.setmFiles(mFiles);
+        updateRecyclerView();
     }
 
     /**
@@ -113,13 +111,22 @@ public class FileManagerActivity extends AppCompatActivity implements ActivityCo
                         EditText fileNameET = (EditText) inputView.findViewById(R.id.et_new_file);
                         String fileNameString = fileNameET.getText().toString();
                         StorageManager.createFileInexternalStorage(FileManagerActivity.this, directoryName, fileNameString);
-                        Toast.makeText(FileManagerActivity.this, fileNameString, Toast.LENGTH_LONG).show();
+                        updateRecyclerView();
                     }
                 });
                 AlertDialog ad = builder.create();
                 ad.show();
         }
         return true;
+    }
+
+    /**
+     * get list of files in directory and update recyclerview
+     */
+    private void updateRecyclerView(){
+        mFiles = StorageManager.getFilesInDirectory(this, directoryName);
+        mAdapter.setmFiles(mFiles);
+
     }
 
     //    /**
