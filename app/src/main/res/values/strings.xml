@@ -9,7 +9,7 @@
         1. Use parallel to the ground. \n
         2. Use outside and away from metal objects. \n
         3. Move horizontally in a figure 8 pattern to calibrate. \n
-        4. Hold steady for 10-20 secs, and allow azimuth to settle before logging. </string>
+        4. When possible, hold steady momentarily, and allow azimuth to settle before logging. </string>
     <string name="fileexists">File already exists</string>
     <string name="extStorageUnavailable">External storage is not available</string>
     <string name="filesSavedTo">Files saved to /Documents</string>
