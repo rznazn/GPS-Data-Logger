@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -70,6 +71,10 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        /**
+         * disable screen TimeOut
+         */
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_logging);
         /**
          * AlertDialog to give use guidance with compass
