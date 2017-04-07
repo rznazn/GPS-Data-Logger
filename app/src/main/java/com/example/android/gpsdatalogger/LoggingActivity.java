@@ -55,6 +55,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private float[] geomagnetic = new float[3];
     private float[] rotation = new float[9];
     private float[] orientation = new float[3];
+    private long lastUpdateToAzimuthTv = 0;
 
     private LocationManager mLocationManager;
 
@@ -235,15 +236,15 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         if (bearing < 0) {
             bearing += 360;
         }
-        /**
-         * set bearing to int value to remove unneeded  ".0"
-         */
-        int bearingAsInt = (int) bearing;
 
-
-        mAzimuthTV.setText(String.valueOf(bearingAsInt));
-
-
+        if (System.currentTimeMillis() > lastUpdateToAzimuthTv + 250) {
+            /**
+             * set bearing to int value to remove unneeded  ".0"
+             */
+            int bearingAsInt = (int) bearing;
+            lastUpdateToAzimuthTv = System.currentTimeMillis();
+            mAzimuthTV.setText(String.valueOf(bearingAsInt));
+        }
     }
 
     @Override
