@@ -137,6 +137,21 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mSensorMagnetic,
+                SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorGravity,
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
     /**
      * inflate the menu in main activity
      *
@@ -224,6 +239,8 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          * set bearing to int value to remove unneeded  ".0"
          */
         int bearingAsInt = (int) bearing;
+
+
         mAzimuthTV.setText(String.valueOf(bearingAsInt));
 
 
