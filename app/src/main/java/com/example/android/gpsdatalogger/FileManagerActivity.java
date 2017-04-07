@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -96,8 +95,7 @@ public class FileManagerActivity extends AppCompatActivity
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       MenuInflater inflater = new MenuInflater(this);
-        inflater.inflate(R.menu.directory_menu, menu);
+       getMenuInflater().inflate(R.menu.directory_menu, menu);
         return true;
 
     }

@@ -19,7 +19,6 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -167,8 +166,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = new MenuInflater(this);
-        inflater.inflate(R.menu.logger_menu, menu);
+        getMenuInflater().inflate(R.menu.logger_menu, menu);
         return true;
     }
 
