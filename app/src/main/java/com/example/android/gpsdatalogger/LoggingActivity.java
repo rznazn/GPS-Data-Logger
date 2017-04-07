@@ -42,7 +42,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private ScrollView mDisplaySV;
     /**
      * Strings for handling file name
-     * TODO add extra activity to create multiple files 
      */
     private String directoryName = "/GPSLog";
     private String fileName = "";
