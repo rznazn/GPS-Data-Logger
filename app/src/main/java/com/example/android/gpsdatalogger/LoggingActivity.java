@@ -220,7 +220,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         if (bearing < 0) {
             bearing += 360;
         }
-        mAzimuthTV.setText(String.valueOf(bearing));
+        /**
+         * set bearing to int value to remove unneeded  ".0"
+         */
+        int bearingAsInt = (int) bearing;
+        mAzimuthTV.setText(String.valueOf(bearingAsInt));
 
 
     }
