@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -58,6 +59,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private long lastUpdateToAzimuthTv = 0;
 
     private LocationManager mLocationManager;
+    private GeomagneticField mGeoMagField;
 
 
     private Sensor mSensorGravity;
@@ -221,10 +223,10 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         bearing = Math.toDegrees(bearing);
         bearing = Math.round(bearing);
 
-//        // fix difference between true North and magnetical North
-//        if (geomagneticField != null) {
-//            bearing += geomagneticField.getDeclination();
-//        }
+        // fix difference between true North and magnetical North
+        if (mGeoMagField != null) {
+            bearing += mGeoMagField.getDeclination();
+        }
 
         /**
          * set bearing to be 0 - 360
@@ -264,6 +266,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 String locationString = "latt: " + lattString +
                         "\nlong: " + longString;
                 mLocationTV.setText(locationString);
+
+                mGeoMagField = new GeomagneticField(Double.valueOf(lattDouble).floatValue(),
+                        Double.valueOf(longDouble).floatValue(),
+                        Double.valueOf(location.getAltitude()).floatValue(),
+                        System.currentTimeMillis());
             }
 
             @Override
