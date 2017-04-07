@@ -64,6 +64,12 @@ public class FileManagerActivity extends AppCompatActivity
         updateRecyclerView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateRecyclerView();
+    }
+
     /**
      * request permission if not already granted
      */
