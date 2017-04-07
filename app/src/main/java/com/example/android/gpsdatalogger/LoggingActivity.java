@@ -223,7 +223,9 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         bearing = Math.toDegrees(bearing);
         bearing = Math.round(bearing);
 
-        // fix difference between true North and magnetical North
+        /**
+         * adjust for declination
+         */
         if (mGeoMagField != null) {
             bearing += mGeoMagField.getDeclination();
         }
