@@ -205,9 +205,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 
         boolean accelOrMagnetic = false;
 
-        // get accelerometer data
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            // we need to use a low pass filter to make data smoothed
             gravity = event.values;
             accelOrMagnetic = true;
 
@@ -217,13 +215,9 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 
         }
 
-        // get rotation matrix to get gravity and magnetic data
         SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
-        // get bearing to target
         SensorManager.getOrientation(rotation, orientation);
-        // east degrees of true North
         bearing = orientation[0];
-        // convert from radians to degrees
         bearing = Math.toDegrees(bearing);
         bearing = Math.round(bearing);
 
@@ -232,7 +226,9 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 //            bearing += geomagneticField.getDeclination();
 //        }
 
-        // bearing must be in 0-360
+        /**
+         * set bearing to be 0 - 360
+         */
         if (bearing < 0) {
             bearing += 360;
         }
