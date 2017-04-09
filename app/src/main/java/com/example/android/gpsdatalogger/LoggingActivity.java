@@ -86,6 +86,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          */
         Intent intent = getIntent();
         fileName = intent.getStringExtra(Intent.EXTRA_TEXT);
+        getSupportActionBar().setTitle(fileName);
 
 /**
  * assign views to local variables
