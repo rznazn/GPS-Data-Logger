@@ -13,4 +13,5 @@
     <string name="fileexists">File already exists</string>
     <string name="extStorageUnavailable">External storage is not available</string>
     <string name="filesSavedTo">Files saved to /Documents</string>
+    <string name="easy">EASY</string>
 </resources>

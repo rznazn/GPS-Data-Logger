@@ -69,17 +69,23 @@
             style="@style/textViewStyle"/>
     </ScrollView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/holo_green_light"/>
+    
     <TextView
         android:id="@+id/tv_log_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:padding="6dp"
         android:layout_margin="6dp"
-        android:textSize="18sp"
-        android:background="@android:color/darker_gray"
+        android:textSize="26sp"
+        android:background="@drawable/red_circle_transparent"
         android:gravity="center"
-        android:textColor="@android:color/black"
-        android:text="LOG"/>
+        android:textColor="@android:color/white"
+        android:text="@string/easy"/>
 
 
 </LinearLayout>
