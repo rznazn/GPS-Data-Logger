@@ -1,6 +1,7 @@
 package com.example.android.gpsdatalogger;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -18,10 +19,12 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -189,6 +192,25 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .setType("text/plain")
                         .setText(mLogDisplayTV.getText())
                         .startChooser();
+                break;
+            case R.id.action_enter_note:
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
+                LayoutInflater layoutInflater = getLayoutInflater();
+                final View inputView = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
+                builder.setView(inputView);
+                builder.setMessage(R.string.enterNoteAlertDialogMessage);
+                builder.setPositiveButton(R.string.enter_note, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText noteEntryET = (EditText) inputView.findViewById(R.id.et_new_file);
+                        String noteEntryString = "<<<" + noteEntryET.getText().toString() + ">>>\n\n";
+                        StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
+                                fileName, noteEntryString, true);
+                        updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));
+                    }
+                });
+                AlertDialog ad = builder.create();
+                ad.show();
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);

@@ -5,7 +5,7 @@
     tools:context="com.example.android.gpsdatalogger.FileManagerActivity">
     <item
         android:id="@+id/action_create_file"
-        android:title="add new file"
+        android:title="@string/add_new_file"
         android:orderInCategory="1"
         app:showAsAction="always"/>
 

@@ -6,8 +6,13 @@
 
     <item
         android:id="@+id/action_share"
-        android:title="share log"
-        android:orderInCategory="1"
+        android:title="@string/share_log"
+        android:orderInCategory="2"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_enter_note"
+        android:title="@string/enter_note"
+        android:orderInCategory="1"
+        app:showAsAction="never"/>
 </menu>
