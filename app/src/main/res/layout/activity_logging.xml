@@ -57,22 +57,7 @@
     android:layout_width="match_parent"
     android:layout_height="1dp"
     android:background="@android:color/holo_green_light"/>
-    <ScrollView
-        android:id="@+id/sv_display"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
 
-        android:paddingTop="12dp">
-        <TextView
-            android:id="@+id/tv_log_display"
-            style="@style/textViewStyle"/>
-    </ScrollView>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/holo_green_light"/>
 
     <TextView
         android:id="@+id/tv_log_button"
@@ -86,6 +71,24 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:text="@string/easy"/>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/holo_green_light"/>
+    <ScrollView
+        android:id="@+id/sv_display"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
+        android:paddingTop="12dp">
+        <TextView
+            android:id="@+id/tv_log_display"
+            style="@style/textViewStyle"/>
+    </ScrollView>
+
 
 
 </LinearLayout>
