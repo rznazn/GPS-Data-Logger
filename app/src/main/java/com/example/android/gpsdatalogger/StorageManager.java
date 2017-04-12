@@ -52,6 +52,27 @@ public class StorageManager {
     }
 
     /**
+     * delete a document
+     * not implemented in this application
+     * only here to complete CRUD
+     */
+
+    public static void deleteFileInExternalStorage(Context context, String directoryname, String filename) {
+        String storageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(storageState)) {
+            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File dir = new File(root.getAbsolutePath() + directoryname);
+            File log = new File(dir, filename);
+            if (log.delete()) {
+                Toast.makeText(context,"File deleted", Toast.LENGTH_LONG ).show();
+            } else{
+                Toast.makeText(context,"Error deleting file, file may not exist", Toast.LENGTH_LONG ).show();
+            }
+
+        }
+    }
+
+    /**
      * get directory list
      */
     public static File[] getFilesInDirectory(Context context, String directoryname) {
