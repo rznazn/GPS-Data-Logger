@@ -108,13 +108,12 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mLogButtonTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String eventTime = mTextClock.getText().toString();
-            String eventAzimuth = mAzimuthTV.getText().toString();
-            String eventLocation = mLocationTV.getText().toString();
-            String eventToLog = "";
-            eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
-                    "\n" + eventLocation + "\n\n");
+                String eventAzimuth = mAzimuthTV.getText().toString();
+                String eventLocation = mLocationTV.getText().toString();
+                String eventToLog = "";
+                eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
+                        "\n" + eventLocation + "\n\n");
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
                 String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
                 updateDisplayLog(currentLog);
@@ -135,7 +134,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 SensorManager.SENSOR_DELAY_GAME);
 
         /**
-         * call to run location services if it is
+         * call to run location services
          */
         runLocationServices();
 
@@ -151,6 +150,16 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+//          TODO delete this portion, only for evaluating battery life.
+//        String eventTime = mTextClock.getText().toString();
+//        String eventAzimuth = mAzimuthTV.getText().toString();
+//        String eventLocation = mLocationTV.getText().toString();
+//        String eventToLog = "";
+//        eventToLog = eventToLog.concat("Activity Paused at: \n" + eventTime + "\n" + eventAzimuth +
+//                "\n" + eventLocation + "\n\n");
+//        StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
+//        String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
+//        updateDisplayLog(currentLog);
     }
 
     @Override
@@ -194,6 +203,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .startChooser();
                 break;
             case R.id.action_enter_note:
+                final String openNoteTime = mTextClock.getText().toString();
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
                 LayoutInflater layoutInflater = getLayoutInflater();
                 final View inputView = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
@@ -203,7 +213,9 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText noteEntryET = (EditText) inputView.findViewById(R.id.et_new_file);
-                        String noteEntryString = "<<<" + noteEntryET.getText().toString() + ">>>\n\n";
+                        String noteCloseTime = mTextClock.getText().toString();
+                        String noteEntryString = "<<<" + openNoteTime + ">>>\n" + noteEntryET.getText().toString()
+                                + "\n<<<" + noteCloseTime + ">>>\n\n";
                         StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
                                 fileName, noteEntryString, true);
                         updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));

@@ -21,8 +21,8 @@
         <TextClock
             android:id="@+id/tc_event_time"
             style="@style/textViewStyle"
-            android:format24Hour="yyyyMMdd hh:mm:ss"
-            android:format12Hour="yyyyMMdd hh:mm:ss"/>
+            android:format24Hour="yyyy.MM.dd hh:mm:ss"
+            android:format12Hour="@null"/>
 
     </LinearLayout>
 
