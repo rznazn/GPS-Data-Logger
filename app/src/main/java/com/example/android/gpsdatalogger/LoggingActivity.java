@@ -298,8 +298,8 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                long gpsTime = location.getTime();
                 long systemTime = System.currentTimeMillis();
+                long gpsTime = location.getTime();
                 long timeDifference = gpsTime - systemTime;
                 int secondsDiff = (int) timeDifference/1000;
                 double lattDouble = location.getLatitude();
@@ -307,7 +307,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 double longDouble = location.getLongitude();
                 String longString = String.valueOf(longDouble);
                 String locationString = "latt: " + lattString +
-                        "\nlong: " + longString + "\n time correction:" + secondsDiff;
+                        "\nlong: " + longString + "\ntime correction:" + secondsDiff;
                 mLocationTV.setText(locationString);
 
                 mGeoMagField = new GeomagneticField(Double.valueOf(lattDouble).floatValue(),
