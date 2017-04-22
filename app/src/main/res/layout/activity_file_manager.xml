@@ -9,7 +9,8 @@
 
     <TextView
         style="@style/textViewStyle"
-        android:text="@string/filesSavedTo"/>
+        android:text="@string/filesSavedTo"
+        android:visibility="invisible"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_file_directory"
