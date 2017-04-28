@@ -21,8 +21,8 @@
         <TextClock
             android:id="@+id/tc_event_time"
             style="@style/textViewStyle"
-            android:format24Hour="yyyy.MM.dd HH:mm:ss"
-            android:format12Hour="yyyy.MM.dd HH:mm:ss"/>
+            android:format24Hour="yyyyMMdd HH:mm:ss"
+            android:format12Hour="yyyyMMdd HH:mm:ss"/>
 
     </LinearLayout>
 
@@ -37,7 +37,7 @@
 
         <TextView
             style="@style/textViewStyle"
-            android:id="@+id/tv_azimuth"/>
+            android:id="@+id/tv_azimuth_logact"/>
     </LinearLayout>
 
     <LinearLayout
@@ -48,10 +48,18 @@
             style="@style/textViewStyle"
             android:paddingRight="12dp"
             android:text="@string/location"/>
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <TextView
-            android:id="@+id/tv_location"
+            android:id="@+id/tv_lat_logact"
             style="@style/textViewStyle"/>
+        <TextView
+            android:id="@+id/tv_long_logact"
+            style="@style/textViewStyle"/>
+
+    </LinearLayout>
     </LinearLayout>
 <View
     android:layout_width="match_parent"

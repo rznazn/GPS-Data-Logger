@@ -19,7 +19,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +37,8 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
      */
     private TextClock mTextClock;
     private TextView mAzimuthTV;
-    private TextView mLocationTV;
+    private TextView mLatitudeTV;
+    private TextView mLongitudeTV;
     private TextView mLogDisplayTV;
     private TextView mLogButtonTV;
     private ScrollView mDisplaySV;
@@ -95,8 +95,9 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
  * assign views to local variables
  */
         mTextClock = (TextClock) findViewById(R.id.tc_event_time);
-        mAzimuthTV = (TextView) findViewById(R.id.tv_azimuth);
-        mLocationTV = (TextView) findViewById(R.id.tv_location);
+        mAzimuthTV = (TextView) findViewById(R.id.tv_azimuth_logact);
+        mLatitudeTV = (TextView) findViewById(R.id.tv_lat_logact);
+        mLongitudeTV = (TextView) findViewById(R.id.tv_long_logact) ;
         mLogDisplayTV = (TextView) findViewById(R.id.tv_log_display);
         mLogButtonTV = (TextView) findViewById(R.id.tv_log_button);
         mDisplaySV = (ScrollView) findViewById(R.id.sv_display);
@@ -110,10 +111,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
             public void onClick(View v) {
                 String eventTime = mTextClock.getText().toString();
                 String eventAzimuth = mAzimuthTV.getText().toString();
-                String eventLocation = mLocationTV.getText().toString();
+                String eventLatitude = mLatitudeTV.getText().toString();
+                String eventLongitude= mLongitudeTV.getText().toString();
                 String eventToLog = "";
                 eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
-                        "\n" + eventLocation + "\n\n");
+                        "\n" + eventLatitude + "\n" + eventLongitude + "\n\n");
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
                 String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
                 updateDisplayLog(currentLog);
@@ -204,18 +206,37 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 break;
             case R.id.action_enter_note:
                 final String openNoteTime = mTextClock.getText().toString();
+                final String azimuth = mAzimuthTV.getText().toString();
+                final String latitude = mLatitudeTV.getText().toString();
+                final String longitude = mLongitudeTV.getText().toString();
+
+                final View adLayout = getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
+
+                final TextView timeTV = (TextView) adLayout.findViewById(R.id.tv_time);
+                timeTV.setText(openNoteTime);
+
+                final TextView azimuthTV = (TextView) adLayout.findViewById(R.id.tv_azimuth);
+                azimuthTV.setText(azimuth);
+
+                final TextView latitudeTV = (TextView) adLayout.findViewById(R.id.tv_lat);
+                latitudeTV.setText(latitude);
+
+                final TextView longitudeTV = (TextView) adLayout.findViewById(R.id.tv_long);
+                longitudeTV.setText(longitude);
+
+                final EditText noteET = (EditText) adLayout.findViewById(R.id.et_new_file);
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
-                LayoutInflater layoutInflater = getLayoutInflater();
-                final View inputView = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
-                builder.setView(inputView);
+                builder.setView(adLayout);
                 builder.setMessage(R.string.enterNoteAlertDialogMessage);
                 builder.setPositiveButton(R.string.enter_note, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EditText noteEntryET = (EditText) inputView.findViewById(R.id.et_new_file);
-                        String noteCloseTime = mTextClock.getText().toString();
-                        String noteEntryString = "<<<" + openNoteTime + ">>>\n" + noteEntryET.getText().toString()
-                                + "\n<<<" + noteCloseTime + ">>>\n\n";
+                        String noteEntryString =  timeTV.getText() + "\n"
+                                + azimuthTV.getText() + "\n"
+                                + latitudeTV. getText() +"\n"
+                                + longitudeTV.getText() +"\n"
+                                +"<<<" + noteET.getText().toString() + ">>>\n\n" ;
                         StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
                                 fileName, noteEntryString, true);
                         updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));
@@ -303,12 +324,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 long timeDifference = gpsTime - systemTime;
                 int secondsDiff = (int) timeDifference/1000;
                 double lattDouble = location.getLatitude();
-                String lattString = String.valueOf(lattDouble);
+                String lattString = Location.convert(lattDouble, Location.FORMAT_MINUTES);
                 double longDouble = location.getLongitude();
-                String longString = String.valueOf(longDouble);
-                String locationString = "latt: " + lattString +
-                        "\nlong: " + longString + "\ntime correction:" + secondsDiff;
-                mLocationTV.setText(locationString);
+                String longString = Location.convert(longDouble, Location.FORMAT_MINUTES);
+                mLatitudeTV.setText(lattString);
+                mLongitudeTV.setText(longString);
 
                 mGeoMagField = new GeomagneticField(Double.valueOf(lattDouble).floatValue(),
                         Double.valueOf(longDouble).floatValue(),
