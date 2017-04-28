@@ -12,6 +12,18 @@ public class WamFormater {
 
     public WamFormater(){}
 
+    /**
+     * this method is used to create a WAM formatted entry from the provided data.
+     * @param eventTime
+     * @param azimuth
+     * @param lattitude
+     * @param longitude
+     * @param note
+     * @param trueForEventFalseForNote
+     * @return
+     * @throws ParseException
+     */
+
     public String formatToWam(String eventTime, String azimuth, String lattitude, String longitude,
                               String note, boolean trueForEventFalseForNote) throws ParseException {
         String[] dateTime = eventTime.split(" ");

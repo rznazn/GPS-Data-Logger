@@ -123,16 +123,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-//                String eventTime = mTextClock.getText().toString();
-//                String eventAzimuth = mAzimuthTV.getText().toString();
-//                String eventLatitude = mLatitudeTV.getText().toString();
-//                String eventLongitude= mLongitudeTV.getText().toString();
-//                String eventToLog = "";
-//                eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
-//                        "\n" + eventLatitude + "\n" + eventLongitude + "\n\n");
-//                StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
-//                String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
-//                updateDisplayLog(currentLog);
 
             }
         });
@@ -166,16 +156,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
-//          TODO delete this portion, only for evaluating battery life.
-//        String eventTime = mTextClock.getText().toString();
-//        String eventAzimuth = mAzimuthTV.getText().toString();
-//        String eventLocation = mLocationTV.getText().toString();
-//        String eventToLog = "";
-//        eventToLog = eventToLog.concat("Activity Paused at: \n" + eventTime + "\n" + eventAzimuth +
-//                "\n" + eventLocation + "\n\n");
-//        StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
-//        String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
-//        updateDisplayLog(currentLog);
     }
 
     @Override
@@ -349,6 +329,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mDisplaySV.fullScroll(View.FOCUS_DOWN);
     }
 
+    /**
+     * create and display the logging alertdialog
+     * @param trueForEvent mark true if loggin an event false to log a note
+     * @throws ParseException
+     */
     private void showAlertDialog(final boolean trueForEvent) throws ParseException {
         final String eventTime = mTextClock.getText().toString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmmss");
@@ -425,11 +410,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 }else {
                     eventType = getString(R.string.operator_note);
                 }
-//                String noteEntryString =  timeTV.getText() + "\n"
-//                        + azimuthTV.getText() + "\n"
-//                        + latitudeTV. getText() +"\n"
-//                        + longitudeTV.getText() +"\n"
-//                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
 
                 String wamEventString = "";
                 String narrative = eventType + eventCanceledTag + noteET.getText().toString().trim().replace('\\', '|');
@@ -456,11 +436,6 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 }else {
                     eventType = getString(R.string.operator_note);
                 }
-//                String noteEntryString =  timeTV.getText() + "\n"
-//                        + azimuthTV.getText() + "\n"
-//                        + latitudeTV. getText() +"\n"
-//                        + longitudeTV.getText() +"\n"
-//                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
 
                 String wamEventString = "";
                 String narrative = eventType + eventDismissedTag + noteET.getText().toString().trim().replace('\\', '|');
