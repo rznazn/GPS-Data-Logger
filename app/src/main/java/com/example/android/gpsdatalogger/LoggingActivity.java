@@ -28,6 +28,8 @@ import android.widget.ScrollView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import java.text.ParseException;
+
 import static com.example.android.gpsdatalogger.StorageManager.readFromExternalStorage;
 
 public class LoggingActivity extends AppCompatActivity implements SensorEventListener{
@@ -46,6 +48,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
      * Strings for handling file name
      */
     private String directoryName = "/GPSLog";
+    private String wamDirectoryName = "/WAMLog";
     private String fileName = "";
     private String wamFileName = "";
 
@@ -90,7 +93,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          */
         Intent intent = getIntent();
         fileName = intent.getStringExtra(Intent.EXTRA_TEXT);
-        wamFileName = fileName + "_wam";
+        wamFileName = fileName.replace(".txt", "_wam.txt");
         getSupportActionBar().setTitle(fileName);
 
 /**
@@ -342,6 +345,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         final String latitude = mLatitudeTV.getText().toString();
         final String longitude = mLongitudeTV.getText().toString();
 
+
         final View adLayout = getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
 
         final TextView timeTV = (TextView) adLayout.findViewById(R.id.tv_time);
@@ -377,7 +381,50 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         +"<<<" + eventType + noteET.getText().toString() + ">>>\n\n" ;
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
                         fileName, noteEntryString, true);
+                String wamEventString = "";
+                WamFormater wamFormater = new WamFormater();
+                try {
+                    wamEventString = wamFormater.formatToWam( timeTV.getText().toString(),azimuthTV.getText().toString()
+                            , latitudeTV.getText().toString(), longitudeTV.getText().toString(), eventType  + noteET.getText().toString(),
+                            trueForEvent);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                StorageManager.writeToExternalStorage(LoggingActivity.this, wamDirectoryName,
+                        wamFileName, wamEventString, true);
+
                 updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String eventType = new String();
+                String eventCanceledTag= getString(R.string.user_canceled);
+                if (trueForEvent) {
+                    eventType = getString(R.string.event);
+                }else {
+                    eventType = getString(R.string.operator_note);
+                }
+                String noteEntryString =  timeTV.getText() + "\n"
+                        + azimuthTV.getText() + "\n"
+                        + latitudeTV. getText() +"\n"
+                        + longitudeTV.getText() +"\n"
+                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
+
+                String wamEventString = "";
+                WamFormater wamFormater = new WamFormater();
+                try {
+                    wamEventString = wamFormater.formatToWam( timeTV.getText().toString(),azimuthTV.getText().toString()
+                    , latitudeTV.getText().toString(), longitudeTV.getText().toString(), eventType + eventCanceledTag + noteET.getText().toString(),
+                            trueForEvent);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                StorageManager.writeToExternalStorage(LoggingActivity.this, wamDirectoryName,
+                        wamFileName, wamEventString, true);
             }
         });
         AlertDialog ad = builder.create();
