@@ -70,6 +70,8 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private LocationManager mLocationManager;
     private GeomagneticField mGeoMagField;
 
+    private boolean adWasConfirmed = false;
+
 
     private Sensor mSensorGravity;
     private Sensor mSensorMagnetic;
@@ -335,6 +337,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
      * @throws ParseException
      */
     private void showAlertDialog(final boolean trueForEvent) throws ParseException {
+        adWasConfirmed = false;
         final String eventTime = mTextClock.getText().toString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmmss");
         Date eventDate = dateFormat.parse(eventTime);
@@ -369,6 +372,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                adWasConfirmed = true;
                 String eventType = new String();
                 if (trueForEvent) {
                     eventType = getString(R.string.event);
@@ -429,27 +433,29 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                String eventType = new String();
-                String eventDismissedTag= getString(R.string.user_dismissed);
-                if (trueForEvent) {
-                    eventType = getString(R.string.event);
-                }else {
-                    eventType = getString(R.string.operator_note);
-                }
+                if (!adWasConfirmed) {
+                    String eventType = new String();
+                    String eventDismissedTag = getString(R.string.user_dismissed);
+                    if (trueForEvent) {
+                        eventType = getString(R.string.event);
+                    } else {
+                        eventType = getString(R.string.operator_note);
+                    }
 
-                String wamEventString = "";
-                String narrative = eventType + eventDismissedTag + noteET.getText().toString().trim().replace('\\', '|');
-                WamFormater wamFormater = new WamFormater();
-                try {
-                    wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
-                            , latitude, longitude, narrative,
-                            trueForEvent);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                    String wamEventString = "";
+                    String narrative = eventType + eventDismissedTag + noteET.getText().toString().trim().replace('\\', '|');
+                    WamFormater wamFormater = new WamFormater();
+                    try {
+                        wamEventString = wamFormater.formatToWam(eventTimeAdjusted, azimuth
+                                , latitude, longitude, narrative,
+                                trueForEvent);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 
-                StorageManager.writeToExternalStorage(LoggingActivity.this, wamDirectoryName,
-                        wamFileName, wamEventString, true);
+                    StorageManager.writeToExternalStorage(LoggingActivity.this, wamDirectoryName,
+                            wamFileName, wamEventString, true);
+                }
             }
         });
         AlertDialog ad = builder.create();
