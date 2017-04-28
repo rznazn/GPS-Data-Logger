@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">GPS data logger</string>
+    <string name="app_name">GTA 1.9</string>
     <string name="location">Location:</string>
     <string name="azimuth">Azimuth:</string>
     <string name="dateTime">Date/Time:</string>
     <string name="newFileAlertDialogMessage">Enter new file name</string>
-    <string name="enterNoteAlertDialogMessage">Enter note if needed \nconfirm to enter\or cancel to ignore</string>
+    <string name="enterNoteAlertDialogMessage">Enter note if needed \nconfirm to enter\nor cancel to ignore</string>
     <string name="create">create</string>
     <string name="compassUseGuide">For best results with the compass: \n
         1. Use parallel to the ground. \n
