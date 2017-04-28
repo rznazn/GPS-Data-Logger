@@ -24,6 +24,7 @@
     <EditText
         android:id="@+id/et_new_file"
         style="@style/textViewStyle"
+        android:maxLength="255"
         android:layout_width="match_parent"/>
 
 </LinearLayout>

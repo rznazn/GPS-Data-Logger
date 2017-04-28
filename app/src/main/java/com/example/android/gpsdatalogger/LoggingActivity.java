@@ -397,11 +397,13 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         +"<<<" + eventType + noteET.getText().toString() + ">>>\n\n" ;
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
                         fileName, noteEntryString, true);
+
                 String wamEventString = "";
+                String narrative = eventType +  noteET.getText().toString().trim().replace('\\', '|');
                 WamFormater wamFormater = new WamFormater();
                 try {
                     wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
-                            , latitude, longitude, eventType  + noteET.getText().toString(),
+                            , latitude, longitude, narrative,
                             trueForEvent);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -430,10 +432,42 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 //                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
 
                 String wamEventString = "";
+                String narrative = eventType + eventCanceledTag + noteET.getText().toString().trim().replace('\\', '|');
                 WamFormater wamFormater = new WamFormater();
                 try {
                     wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
-                            , latitude, longitude, eventType + eventCanceledTag + noteET.getText().toString(),
+                            , latitude, longitude, narrative,
+                            trueForEvent);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                StorageManager.writeToExternalStorage(LoggingActivity.this, wamDirectoryName,
+                        wamFileName, wamEventString, true);
+            }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                String eventType = new String();
+                String eventDismissedTag= getString(R.string.user_dismissed);
+                if (trueForEvent) {
+                    eventType = getString(R.string.event);
+                }else {
+                    eventType = getString(R.string.operator_note);
+                }
+//                String noteEntryString =  timeTV.getText() + "\n"
+//                        + azimuthTV.getText() + "\n"
+//                        + latitudeTV. getText() +"\n"
+//                        + longitudeTV.getText() +"\n"
+//                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
+
+                String wamEventString = "";
+                String narrative = eventType + eventDismissedTag + noteET.getText().toString().trim().replace('\\', '|');
+                WamFormater wamFormater = new WamFormater();
+                try {
+                    wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
+                            , latitude, longitude, narrative,
                             trueForEvent);
                 } catch (ParseException e) {
                     e.printStackTrace();

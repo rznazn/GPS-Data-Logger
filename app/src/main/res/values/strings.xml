@@ -23,4 +23,5 @@
     <string name="enter_note">enter note</string>
     <string name="cancel">cancel</string>
     <string name="user_canceled">*user canceled entry*</string>
+    <string name="user_dismissed">*user dismissed entry*</string>
 </resources>
