@@ -65,7 +65,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private float[] rotation = new float[9];
     private float[] orientation = new float[3];
     private long lastUpdateToAzimuthTv = 0;
-    private int secondsDiff = 0;
+    private long millisecondsDiff = 0;
 
     private LocationManager mLocationManager;
     private GeomagneticField mGeoMagField;
@@ -301,8 +301,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
             public void onLocationChanged(Location location) {
                 long systemTime = System.currentTimeMillis();
                 long gpsTime = location.getTime();
-                long timeDifference = gpsTime - systemTime;
-                secondsDiff = (int) timeDifference/1000;
+                millisecondsDiff = gpsTime - systemTime;
                 double lattDouble = location.getLatitude();
                 String lattString = Location.convert(lattDouble, Location.FORMAT_MINUTES);
                 double longDouble = location.getLongitude();
@@ -339,7 +338,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 
             return;
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000,
                 1, mLocationListener);
     }
     /**
@@ -355,7 +354,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmmss");
         Date eventDate = dateFormat.parse(eventTime);
         long eventTimeInMil = eventDate.getTime();
-        long eventEndTimeInMil = eventTimeInMil + secondsDiff;
+        long eventEndTimeInMil = eventTimeInMil + millisecondsDiff;
         final String eventTimeAdjusted =  dateFormat.format(eventEndTimeInMil);
 
         final String azimuth = mAzimuthTV.getText().toString();
