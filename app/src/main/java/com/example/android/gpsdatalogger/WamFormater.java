@@ -44,7 +44,7 @@ public class WamFormater {
         double wamLonDegrees = Double.valueOf( lonSplit[0]) * 100;
         if (wamLonDegrees <0){
             wamLonDegrees = wamLonDegrees * -1;
-            northOrSouth = "W";
+            eastOrWest = "W";
 
         }
         double wamLonMinutes = Double.valueOf(lonSplit[1]);
@@ -58,7 +58,7 @@ public class WamFormater {
                     +  wamLatFormatted + "\\" + northOrSouth + "\\"
                     + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\27\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
                     + azimuth + "\\2.5\\\\\\0.1\\"
-                    + endDateToLog + "\\" + endTimeToLog + "\\241\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
+                    + endDateToLog + "\\" + endTimeToLog + "\\000\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
                     "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n";
         } else {
             return "ACTION\\"
