@@ -47,6 +47,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
      */
     private String directoryName = "/GPSLog";
     private String fileName = "";
+    private String wamFileName = "";
 
     /**
      * Variables for compass and location use
@@ -89,6 +90,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          */
         Intent intent = getIntent();
         fileName = intent.getStringExtra(Intent.EXTRA_TEXT);
+        wamFileName = fileName + "_wam";
         getSupportActionBar().setTitle(fileName);
 
 /**
@@ -110,7 +112,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
             @Override
             public void onClick(View v) {
 
-                showAlertDialog();
+                showAlertDialog(true);
 //                String eventTime = mTextClock.getText().toString();
 //                String eventAzimuth = mAzimuthTV.getText().toString();
 //                String eventLatitude = mLatitudeTV.getText().toString();
@@ -207,7 +209,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .startChooser();
                 break;
             case R.id.action_enter_note:
-                showAlertDialog();
+                showAlertDialog(false);
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -334,7 +336,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mDisplaySV.fullScroll(View.FOCUS_DOWN);
     }
 
-    private void showAlertDialog(){
+    private void showAlertDialog(final boolean trueForEvent){
         final String openNoteTime = mTextClock.getText().toString();
         final String azimuth = mAzimuthTV.getText().toString();
         final String latitude = mLatitudeTV.getText().toString();
@@ -359,14 +361,20 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
         builder.setView(adLayout);
         builder.setMessage(R.string.enterNoteAlertDialogMessage);
-        builder.setPositiveButton(R.string.enter_note, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String eventType = new String();
+                if (trueForEvent) {
+                    eventType = getString(R.string.event);
+                }else {
+                    eventType = getString(R.string.operator_note);
+                }
                 String noteEntryString =  timeTV.getText() + "\n"
                         + azimuthTV.getText() + "\n"
                         + latitudeTV. getText() +"\n"
                         + longitudeTV.getText() +"\n"
-                        +"<<<" + noteET.getText().toString() + ">>>\n\n" ;
+                        +"<<<" + eventType + noteET.getText().toString() + ">>>\n\n" ;
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
                         fileName, noteEntryString, true);
                 updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));

@@ -4,8 +4,7 @@
     <string name="azimuth">Azimuth:</string>
     <string name="dateTime">Date/Time:</string>
     <string name="newFileAlertDialogMessage">Enter new file name</string>
-    <string name="enterNoteAlertDialogMessage">Enter note to add to log,\nnote will be added after last logged event.\n
-    Provide event DTG.</string>
+    <string name="enterNoteAlertDialogMessage">Enter note if needed \nconfirm to enter\or cancel to ignore</string>
     <string name="create">create</string>
     <string name="compassUseGuide">For best results with the compass: \n
         1. Use parallel to the ground. \n
@@ -16,7 +15,10 @@
     <string name="extStorageUnavailable">External storage is not available</string>
     <string name="filesSavedTo">Files saved to /Documents</string>
     <string name="easy">EASY</string>
-    <string name="enter_note">Enter Note in Record</string>
+    <string name="confirm">confirm</string>
     <string name="share_log">Share Log</string>
     <string name="add_new_file">Add New File</string>
+    <string name="event">*event*</string>
+    <string name="operator_note">*operator note*</string>
+    <string name="enter_note">enter note</string>
 </resources>

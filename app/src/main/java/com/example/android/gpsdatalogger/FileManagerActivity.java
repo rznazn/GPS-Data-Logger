@@ -36,6 +36,7 @@ public class FileManagerActivity extends AppCompatActivity
     private DirectoryAdapter mAdapter;
     private static final int FINE_LOCATION_PERMISSION = 0;
     public static final String directoryName = "/GPSLog";
+    public static final String wamDirectoryName = "/WAMLog";
     private File[] mFiles;
 
     @Override
@@ -116,8 +117,9 @@ public class FileManagerActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText fileNameET = (EditText) inputView.findViewById(R.id.et_new_file);
-                        String fileNameString = fileNameET.getText().toString() + ".txt";
-                        StorageManager.createFileInExternalStorage(FileManagerActivity.this, directoryName, fileNameString);
+                        String fileNameString = fileNameET.getText().toString() ;
+                        StorageManager.createFileInExternalStorage(FileManagerActivity.this, directoryName, fileNameString + ".txt");
+                        StorageManager.createFileInExternalStorage(FileManagerActivity.this, wamDirectoryName, fileNameString + "_wam.txt");
                         updateRecyclerView();
                     }
                 });

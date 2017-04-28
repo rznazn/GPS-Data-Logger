@@ -8,7 +8,7 @@
     tools:context="com.example.android.gpsdatalogger.FileManagerActivity">
 
     <TextView
-        style="@style/textViewStyle"
+        style="@style/listTextViewStyle"
         android:text="@string/filesSavedTo"/>
 
     <android.support.v7.widget.RecyclerView
