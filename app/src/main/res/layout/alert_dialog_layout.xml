@@ -23,6 +23,7 @@
 
     <EditText
         android:id="@+id/et_new_file"
-        style="@style/textViewStyle" />
+        style="@style/textViewStyle"
+        android:layout_width="match_parent"/>
 
 </LinearLayout>

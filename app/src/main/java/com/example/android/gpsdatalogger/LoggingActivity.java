@@ -109,16 +109,18 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mLogButtonTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String eventTime = mTextClock.getText().toString();
-                String eventAzimuth = mAzimuthTV.getText().toString();
-                String eventLatitude = mLatitudeTV.getText().toString();
-                String eventLongitude= mLongitudeTV.getText().toString();
-                String eventToLog = "";
-                eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
-                        "\n" + eventLatitude + "\n" + eventLongitude + "\n\n");
-                StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
-                String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
-                updateDisplayLog(currentLog);
+
+                showAlertDialog();
+//                String eventTime = mTextClock.getText().toString();
+//                String eventAzimuth = mAzimuthTV.getText().toString();
+//                String eventLatitude = mLatitudeTV.getText().toString();
+//                String eventLongitude= mLongitudeTV.getText().toString();
+//                String eventToLog = "";
+//                eventToLog = eventToLog.concat(eventTime + "\n" + eventAzimuth +
+//                        "\n" + eventLatitude + "\n" + eventLongitude + "\n\n");
+//                StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName, fileName, eventToLog, true);
+//                String currentLog = StorageManager.readFromExternalStorage(LoggingActivity.this, directoryName, fileName);
+//                updateDisplayLog(currentLog);
 
             }
         });
@@ -205,45 +207,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .startChooser();
                 break;
             case R.id.action_enter_note:
-                final String openNoteTime = mTextClock.getText().toString();
-                final String azimuth = mAzimuthTV.getText().toString();
-                final String latitude = mLatitudeTV.getText().toString();
-                final String longitude = mLongitudeTV.getText().toString();
-
-                final View adLayout = getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
-
-                final TextView timeTV = (TextView) adLayout.findViewById(R.id.tv_time);
-                timeTV.setText(openNoteTime);
-
-                final TextView azimuthTV = (TextView) adLayout.findViewById(R.id.tv_azimuth);
-                azimuthTV.setText(azimuth);
-
-                final TextView latitudeTV = (TextView) adLayout.findViewById(R.id.tv_lat);
-                latitudeTV.setText(latitude);
-
-                final TextView longitudeTV = (TextView) adLayout.findViewById(R.id.tv_long);
-                longitudeTV.setText(longitude);
-
-                final EditText noteET = (EditText) adLayout.findViewById(R.id.et_new_file);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
-                builder.setView(adLayout);
-                builder.setMessage(R.string.enterNoteAlertDialogMessage);
-                builder.setPositiveButton(R.string.enter_note, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String noteEntryString =  timeTV.getText() + "\n"
-                                + azimuthTV.getText() + "\n"
-                                + latitudeTV. getText() +"\n"
-                                + longitudeTV.getText() +"\n"
-                                +"<<<" + noteET.getText().toString() + ">>>\n\n" ;
-                        StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
-                                fileName, noteEntryString, true);
-                        updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));
-                    }
-                });
-                AlertDialog ad = builder.create();
-                ad.show();
+                showAlertDialog();
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -368,6 +332,48 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private void updateDisplayLog(String currentLog){
         mLogDisplayTV.setText(currentLog);
         mDisplaySV.fullScroll(View.FOCUS_DOWN);
+    }
+
+    private void showAlertDialog(){
+        final String openNoteTime = mTextClock.getText().toString();
+        final String azimuth = mAzimuthTV.getText().toString();
+        final String latitude = mLatitudeTV.getText().toString();
+        final String longitude = mLongitudeTV.getText().toString();
+
+        final View adLayout = getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
+
+        final TextView timeTV = (TextView) adLayout.findViewById(R.id.tv_time);
+        timeTV.setText(openNoteTime);
+
+        final TextView azimuthTV = (TextView) adLayout.findViewById(R.id.tv_azimuth);
+        azimuthTV.setText(azimuth);
+
+        final TextView latitudeTV = (TextView) adLayout.findViewById(R.id.tv_lat);
+        latitudeTV.setText(latitude);
+
+        final TextView longitudeTV = (TextView) adLayout.findViewById(R.id.tv_long);
+        longitudeTV.setText(longitude);
+
+        final EditText noteET = (EditText) adLayout.findViewById(R.id.et_new_file);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoggingActivity.this);
+        builder.setView(adLayout);
+        builder.setMessage(R.string.enterNoteAlertDialogMessage);
+        builder.setPositiveButton(R.string.enter_note, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String noteEntryString =  timeTV.getText() + "\n"
+                        + azimuthTV.getText() + "\n"
+                        + latitudeTV. getText() +"\n"
+                        + longitudeTV.getText() +"\n"
+                        +"<<<" + noteET.getText().toString() + ">>>\n\n" ;
+                StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
+                        fileName, noteEntryString, true);
+                updateDisplayLog(readFromExternalStorage(LoggingActivity.this, directoryName, fileName));
+            }
+        });
+        AlertDialog ad = builder.create();
+        ad.show();
     }
 
 }
