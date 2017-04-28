@@ -29,6 +29,8 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.android.gpsdatalogger.StorageManager.readFromExternalStorage;
 
@@ -63,6 +65,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
     private float[] rotation = new float[9];
     private float[] orientation = new float[3];
     private long lastUpdateToAzimuthTv = 0;
+    private int secondsDiff = 0;
 
     private LocationManager mLocationManager;
     private GeomagneticField mGeoMagField;
@@ -115,7 +118,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
             @Override
             public void onClick(View v) {
 
-                showAlertDialog(true);
+                try {
+                    showAlertDialog(true);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 //                String eventTime = mTextClock.getText().toString();
 //                String eventAzimuth = mAzimuthTV.getText().toString();
 //                String eventLatitude = mLatitudeTV.getText().toString();
@@ -212,7 +219,11 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                         .startChooser();
                 break;
             case R.id.action_enter_note:
-                showAlertDialog(false);
+                try {
+                    showAlertDialog(false);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -291,7 +302,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 long systemTime = System.currentTimeMillis();
                 long gpsTime = location.getTime();
                 long timeDifference = gpsTime - systemTime;
-                int secondsDiff = (int) timeDifference/1000;
+                secondsDiff = (int) timeDifference/1000;
                 double lattDouble = location.getLatitude();
                 String lattString = Location.convert(lattDouble, Location.FORMAT_MINUTES);
                 double longDouble = location.getLongitude();
@@ -339,8 +350,14 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         mDisplaySV.fullScroll(View.FOCUS_DOWN);
     }
 
-    private void showAlertDialog(final boolean trueForEvent){
-        final String openNoteTime = mTextClock.getText().toString();
+    private void showAlertDialog(final boolean trueForEvent) throws ParseException {
+        final String eventTime = mTextClock.getText().toString();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmmss");
+        Date eventDate = dateFormat.parse(eventTime);
+        long eventTimeInMil = eventDate.getTime();
+        long eventEndTimeInMil = eventTimeInMil + secondsDiff;
+        final String eventTimeAdjusted =  dateFormat.format(eventEndTimeInMil);
+
         final String azimuth = mAzimuthTV.getText().toString();
         final String latitude = mLatitudeTV.getText().toString();
         final String longitude = mLongitudeTV.getText().toString();
@@ -349,7 +366,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
         final View adLayout = getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
 
         final TextView timeTV = (TextView) adLayout.findViewById(R.id.tv_time);
-        timeTV.setText(openNoteTime);
+        timeTV.setText(eventTimeAdjusted);
 
         final TextView azimuthTV = (TextView) adLayout.findViewById(R.id.tv_azimuth);
         azimuthTV.setText(azimuth);
@@ -374,18 +391,18 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 }else {
                     eventType = getString(R.string.operator_note);
                 }
-                String noteEntryString =  timeTV.getText() + "\n"
-                        + azimuthTV.getText() + "\n"
-                        + latitudeTV. getText() +"\n"
-                        + longitudeTV.getText() +"\n"
+                String noteEntryString =  eventTimeAdjusted + "\n"
+                        + azimuth + "\n"
+                        + latitude +"\n"
+                        + longitude +"\n"
                         +"<<<" + eventType + noteET.getText().toString() + ">>>\n\n" ;
                 StorageManager.writeToExternalStorage(LoggingActivity.this, directoryName,
                         fileName, noteEntryString, true);
                 String wamEventString = "";
                 WamFormater wamFormater = new WamFormater();
                 try {
-                    wamEventString = wamFormater.formatToWam( timeTV.getText().toString(),azimuthTV.getText().toString()
-                            , latitudeTV.getText().toString(), longitudeTV.getText().toString(), eventType  + noteET.getText().toString(),
+                    wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
+                            , latitude, longitude, eventType  + noteET.getText().toString(),
                             trueForEvent);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -407,17 +424,17 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 }else {
                     eventType = getString(R.string.operator_note);
                 }
-                String noteEntryString =  timeTV.getText() + "\n"
-                        + azimuthTV.getText() + "\n"
-                        + latitudeTV. getText() +"\n"
-                        + longitudeTV.getText() +"\n"
-                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
+//                String noteEntryString =  timeTV.getText() + "\n"
+//                        + azimuthTV.getText() + "\n"
+//                        + latitudeTV. getText() +"\n"
+//                        + longitudeTV.getText() +"\n"
+//                        +"<<<" + eventType + eventCanceledTag + noteET.getText().toString() + ">>>\n\n" ;
 
                 String wamEventString = "";
                 WamFormater wamFormater = new WamFormater();
                 try {
-                    wamEventString = wamFormater.formatToWam( timeTV.getText().toString(),azimuthTV.getText().toString()
-                    , latitudeTV.getText().toString(), longitudeTV.getText().toString(), eventType + eventCanceledTag + noteET.getText().toString(),
+                    wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
+                            , latitude, longitude, eventType  + noteET.getText().toString(),
                             trueForEvent);
                 } catch (ParseException e) {
                     e.printStackTrace();
