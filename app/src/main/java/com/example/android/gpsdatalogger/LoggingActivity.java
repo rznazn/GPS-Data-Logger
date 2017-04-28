@@ -433,7 +433,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
                 WamFormater wamFormater = new WamFormater();
                 try {
                     wamEventString = wamFormater.formatToWam( eventTimeAdjusted,azimuth
-                            , latitude, longitude, eventType  + noteET.getText().toString(),
+                            , latitude, longitude, eventType + eventCanceledTag + noteET.getText().toString(),
                             trueForEvent);
                 } catch (ParseException e) {
                     e.printStackTrace();
