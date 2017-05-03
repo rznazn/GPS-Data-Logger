@@ -42,7 +42,7 @@ public class WamFormater {
 
         String[] latSplit = latitude.split(":");
         String northOrSouth = "N";
-        int wamLatDegrees = Integer.valueOf( latSplit[0]) * 100;
+        double wamLatDegrees = Integer.valueOf( latSplit[0]) * 100;
         if (wamLatDegrees <0){
             wamLatDegrees = wamLatDegrees * -1;
             northOrSouth = "S";
@@ -68,20 +68,32 @@ public class WamFormater {
                     + timeToLog + "\\000\\\\\\999\\\\\\\\\\\\\\"
                     +  note + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\1\\TEXT_LINEB_LL\\"
                     +  wamLatFormatted + "\\" + northOrSouth + "\\"
-                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\27\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\11\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
                     + azimuth + "\\2.5\\\\\\0.1\\"
                     + endDateToLog + "\\" + endTimeToLog + "\\000\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
-                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n";
+                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n"
+                    + "POINT\\"
+                    + dateToLog + "\\"
+                    + timeToLog + "\\000\\"
+                    + wamLatFormatted + "\\" + northOrSouth + "\\"
+                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\0.0\\0.0\\MSL\\\\\\\\JADeMobile\\\\L" +
+                    "\\\\F\\\\\\\\\\\\999\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GDD\\\n";
         } else {
             return "ACTION\\"
                     + dateToLog + "\\"
                     + timeToLog + "\\000\\\\\\999\\\\\\\\\\\\\\"
                     +  note + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\1\\TEXT_LL\\"
                     +  wamLatFormatted + "\\" + northOrSouth + "\\"
-                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\27\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\11\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
                     + azimuth + "\\2.5\\\\\\0.1\\"
                     + endDateToLog + "\\" + endTimeToLog + "\\000\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
-                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n";
+                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n"
+                    + "POINT\\"
+                    + dateToLog + "\\"
+                    + timeToLog + "\\000\\"
+                    + wamLatFormatted + "\\" + northOrSouth + "\\"
+                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\0.0\\0.0\\MSL\\\\\\\\JADeMobile\\\\L" +
+                    "\\\\F\\\\\\\\\\\\999\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GDD\\\n";
         }
     }
 }

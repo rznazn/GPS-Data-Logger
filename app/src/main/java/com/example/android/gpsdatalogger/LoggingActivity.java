@@ -97,9 +97,9 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
          * set filename to equal that from the view clicked to open this activity
          */
         Intent intent = getIntent();
-        fileName = intent.getStringExtra(Intent.EXTRA_TEXT);
-        wamFileName = fileName.replace(".txt", "_wam.txt");
-        getSupportActionBar().setTitle(fileName);
+        fileName = intent.getStringExtra(Intent.EXTRA_TEXT) + ".txt";
+        wamFileName = intent.getStringExtra(Intent.EXTRA_TEXT) + "_wam.txt";
+        getSupportActionBar().setTitle(intent.getStringExtra(Intent.EXTRA_TEXT));
 
 /**
  * assign views to local variables
@@ -320,7 +320,7 @@ public class LoggingActivity extends AppCompatActivity implements SensorEventLis
 
             return;
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000,
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
                 1, mLocationListener);
     }
     /**
